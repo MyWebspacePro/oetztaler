@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ötztaler Verkehrsgesellschaft – Bus &amp; Shuttle im Ötztal</title>
+<meta name="description" content="Linienverkehr, Reisebusse und Shuttle-Service im Ötztal: nächste Abfahrten live, Fahrpläne aller Linien und Shuttle-Buchung in vier Schritten.">
+<style>
+/* ============================================================
+   Ötztaler – Konzept-Neugestaltung der Startseite (Demo)
+   Eine Datei, kein Framework, keine externen Abhängigkeiten.
+   ============================================================ */
+:root{
+  --navy:#143654;
+  --navy-2:#0e2740;
+  --navy-3:#1b4a74;
+  --blue:#2e6da4;
+  --blue-strong:#245d92;
+  --sky:#a9c9e8;
+  --paper:#f6f8fa;
+  --card:#ffffff;
+  --ink:#1c2b38;
+  --muted:#51626f;
+  --line:#dfe6ec;
+  --ok-bg:#e4efe4;
+  --ok-ink:#215c31;
+  --warn-bg:#f8eed6;
+  --warn-ink:#7a5400;
+  --shadow:0 12px 32px rgba(16,42,66,.10);
+  --radius:12px;
+  --serif:Georgia,"Iowan Old Style","Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+[data-theme="dark"]{
+  --navy:#0c2236;
+  --navy-2:#081726;
+  --navy-3:#1b4a74;
+  --blue:#8ab6dd;
+  --blue-strong:#a9c9e8;
+  --paper:#0d1926;
+  --card:#14283b;
+  --ink:#e7eef5;
+  --muted:#9fb2c2;
+  --line:#23394f;
+  --ok-bg:#17301f;
+  --ok-ink:#8fd0a1;
+  --warn-bg:#33290f;
+  --warn-ink:#e3bd6b;
+  --shadow:0 12px 32px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+body{
+  font-family:var(--sans);
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.6;
+  font-size:16px;
+}
+img,svg{display:block}
+a{color:var(--blue-strong)}
+:focus-visible{outline:3px solid var(--blue-strong);outline-offset:2px;border-radius:4px}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+.skip{
+  position:absolute;left:-999px;top:8px;background:var(--navy);color:#fff;
+  padding:10px 16px;border-radius:8px;z-index:200;text-decoration:none
+}
+.skip:focus{left:8px}
+
+/* ---------- Kopfleiste ---------- */
+.topbar{background:var(--navy-2);color:#cfe0ef;font-size:14px}
+.topbar .wrap{display:flex;align-items:center;gap:24px;min-height:42px}
+.topbar a{color:#eaf2f9;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.topbar a:hover{color:#fff;text-decoration:underline}
+.topbar .spacer{flex:1}
+.icon{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* Darkmode-Schalter */
+.theme-toggle{
+  display:inline-flex;align-items:center;gap:10px;background:none;border:0;
+  color:#eaf2f9;font:inherit;cursor:pointer;padding:4px 0
+}
+.theme-toggle .track{
+  width:40px;height:22px;border-radius:11px;background:#2c4a68;position:relative;
+  transition:background .15s;flex:none;border:1px solid #3f6083
+}
+.theme-toggle .knob{
+  position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;
+  background:#cfe0ef;transition:transform .15s
+}
+.theme-toggle[aria-checked="true"] .track{background:var(--blue)}
+.theme-toggle[aria-checked="true"] .knob{transform:translateX(18px);background:#fff}
+
+/* ---------- Hauptnavigation ---------- */
+.site-head{
+  position:sticky;top:0;z-index:100;background:var(--card);
+  border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(16,42,66,.05)
+}
+.site-head .wrap{display:flex;align-items:center;gap:24px;min-height:74px}
+.logo{text-decoration:none;color:var(--navy);display:flex;flex-direction:column;line-height:1.1}
+.logo .word{
+  font-family:var(--serif);font-weight:700;font-size:27px;letter-spacing:.06em;
+  border-bottom:3px solid var(--navy);padding-bottom:2px
+}
+[data-theme="dark"] .logo .word{border-color:var(--sky)}
+.logo .claim{font-size:12px;font-style:italic;color:var(--muted);margin-top:3px}
+.main-nav{margin-left:auto}
+.main-nav ul{list-style:none;display:flex;gap:6px}
+.main-nav a{
+  display:block;text-decoration:none;color:var(--ink);font-weight:600;font-size:15.5px;
+  padding:10px 14px;border-radius:8px
+}
+.main-nav a:hover{background:var(--paper);color:var(--navy)}
+.head-cta{margin-left:8px}
+.burger{
+  display:none;margin-left:auto;background:var(--navy);border:0;color:#fff;
+  width:44px;height:44px;border-radius:8px;cursor:pointer;
+  align-items:center;justify-content:center
+}
+.mobile-nav{display:none}
+
+/* Buttons mit abgeschrägter Ecke (Markenzeichen) */
+.btn{
+  display:inline-flex;align-items:center;gap:10px;text-decoration:none;cursor:pointer;
+  font-weight:700;font-size:15px;letter-spacing:.02em;border:0;font-family:var(--sans);
+  padding:14px 22px;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%);
+}
+.btn-primary{background:var(--navy);color:#fff}
+.btn-primary:hover{background:var(--navy-3)}
+[data-theme="dark"] .btn-primary{background:var(--sky);color:#0c2236}
+[data-theme="dark"] .btn-primary:hover{background:#c3daf0}
+[data-theme="dark"] .logo{color:var(--sky)}
+[data-theme="dark"] .logo .claim{color:var(--muted)}
+.head-cta .btn{white-space:nowrap}
+.btn-ghost{background:transparent;color:var(--navy);box-shadow:inset 0 0 0 2px var(--navy)}
+.btn-ghost:hover{background:rgba(20,54,84,.07)}
+[data-theme="dark"] .btn-ghost{color:var(--ink);box-shadow:inset 0 0 0 2px var(--sky)}
+.btn-light{background:#fff;color:var(--navy)}
+.btn-light:hover{background:#eaf1f8}
+
+/* ---------- Hero ---------- */
+.hero{background:var(--navy);color:#fff;overflow:hidden;position:relative;padding:0}
+.hero-art{
+  position:absolute;inset:0;width:100%;height:100%;
+  display:block
+}
+.hero-art .sk{fill:var(--navy-2)}
+.hero-art .r1{fill:var(--navy-3)}
+.hero-art .r2{fill:#16395c}
+.hero-art .r3{fill:#0b2138}
+.hero-art .road{stroke:#0a1c2e;stroke-width:26;fill:none;stroke-linecap:round}
+.hero-art .roadline{stroke:#cfe0ef;stroke-width:2.5;fill:none;stroke-dasharray:16 14;opacity:.5}
+.hero-art .busbody{fill:#eaf2f9}
+.hero-art .buswin{fill:#143654}
+.hero-art .buswheel{fill:#0a1c2e}
+.hero-art .cloud{fill:#ffffff;opacity:.07}
+.hero-content{
+  position:relative;z-index:1;display:flex;align-items:center;
+  min-height:clamp(440px,54vw,600px);padding:40px 0 120px
+}
+.hero-inner{max-width:640px}
+.eyebrow{
+  font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--sky);margin-bottom:14px
+}
+.hero h1{
+  font-family:var(--serif);font-weight:700;font-size:clamp(34px,4.6vw,58px);
+  line-height:1.12;letter-spacing:-.01em;margin-bottom:18px
+}
+.hero .lead{font-size:clamp(16px,1.4vw,19px);color:#d9e6f2;max-width:520px;margin-bottom:30px}
+.hero-actions{display:flex;flex-wrap:wrap;gap:14px}
+
+/* Quick-Actions-Karten */
+.quick{
+  background:var(--paper);padding:64px 0 8px
+}
+.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:-96px;position:relative;z-index:5}
+.quick-card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:24px;text-decoration:none;color:var(--ink);
+  display:flex;flex-direction:column;gap:6px;transition:transform .15s,box-shadow .15s
+}
+.quick-card:hover{transform:translateY(-3px);box-shadow:0 16px 36px rgba(16,42,66,.16)}
+.quick-card .qtop{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.qicon{
+  width:48px;height:48px;border-radius:10px;background:rgba(46,109,164,.12);
+  display:flex;align-items:center;justify-content:center;color:var(--blue-strong);flex:none
+}
+.qicon .icon{width:26px;height:26px}
+.qsmall{font-size:13px;color:var(--muted)}
+.qtitle{font-family:var(--serif);font-size:21px;font-weight:700;color:var(--navy);line-height:1.25}
+[data-theme="dark"] .qtitle{color:var(--sky)}
+.qarrow{margin-top:auto;align-self:flex-end;color:var(--blue-strong)}
+
+/* ---------- Sektionen allgemein ---------- */
+section{padding:72px 0}
+.section-head{max-width:680px;margin-bottom:36px}
+.section-head h2{
+  font-family:var(--serif);font-size:clamp(26px,3vw,36px);color:var(--navy);
+  line-height:1.2;margin-bottom:12px;letter-spacing:-.01em
+}
+[data-theme="dark"] .section-head h2{color:var(--sky)}
+.section-head p{color:var(--muted);font-size:17px}
+
+/* ---------- Live-Abfahrten ---------- */
+#abfahrten{background:var(--paper)}
+.widget{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);overflow:hidden
+}
+.widget-bar{
+  display:flex;flex-wrap:wrap;align-items:center;gap:16px;
+  padding:18px 24px;border-bottom:1px solid var(--line);background:rgba(46,109,164,.05)
+}
+.widget-bar label{font-weight:700;font-size:14.5px;color:var(--ink)}
+select#stop{
+  font:inherit;font-weight:600;color:var(--ink);background:var(--card);
+  border:1.5px solid var(--line);border-radius:8px;padding:10px 14px;min-width:230px;cursor:pointer
+}
+.clock{
+  margin-left:auto;display:flex;align-items:center;gap:9px;color:var(--muted);
+  font-variant-numeric:tabular-nums;font-size:14.5px
+}
+.clock .dot{width:9px;height:9px;border-radius:50%;background:#3d8f52;flex:none}
+.abf-hint{padding:10px 24px 0;color:var(--muted);font-size:13.5px}
+.abf-list{list-style:none;padding:14px 12px 18px}
+.abf-row{
+  display:grid;grid-template-columns:64px 1fr auto auto auto;gap:14px;align-items:center;
+  padding:13px 12px;border-radius:10px
+}
+.abf-row:nth-child(odd){background:rgba(46,109,164,.05)}
+.lchip{
+  background:var(--navy);color:#fff;font-weight:700;font-size:14px;text-align:center;
+  padding:6px 4px;border-radius:7px;letter-spacing:.03em
+}
+.abf-dir{min-width:0}
+.abf-dir .dir{display:block;font-weight:700;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.abf-dir .ln{display:block;font-size:13px;color:var(--muted)}
+.abf-time{font-weight:700;font-size:17px;font-variant-numeric:tabular-nums}
+.abf-in{color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums;min-width:74px;text-align:right}
+.badge{
+  font-size:12.5px;font-weight:700;padding:4px 10px;border-radius:999px;
+  min-width:88px;text-align:center
+}
+.badge-ok{background:var(--ok-bg);color:var(--ok-ink)}
+.badge-warn{background:var(--warn-bg);color:var(--warn-ink)}
+.badge-neutral{background:rgba(46,109,164,.10);color:var(--blue-strong)}
+.abf-empty{padding:26px 24px;color:var(--muted);font-size:15.5px}
+.widget-foot{
+  display:flex;gap:8px;align-items:center;padding:12px 24px;border-top:1px solid var(--line);
+  color:var(--muted);font-size:13px
+}
+.demo-chip{
+  background:rgba(46,109,164,.12);color:var(--blue-strong);font-weight:700;
+  font-size:12px;padding:2px 10px;border-radius:999px;letter-spacing:.05em
+}
+
+/* ---------- Linien ---------- */
+#linien{background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.line-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.line-card{
+  border:1px solid var(--line);border-radius:var(--radius);padding:22px;background:var(--card);
+  display:flex;flex-direction:column;gap:10px
+}
+.line-top{display:flex;align-items:center;gap:12px}
+.line-name{font-weight:700;font-size:16.5px;line-height:1.3}
+.line-route{color:var(--muted);font-size:14.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.line-route .icon{width:15px;height:15px;color:var(--blue-strong)}
+.line-meta{display:flex;align-items:center;gap:10px;margin-top:auto;padding-top:12px;border-top:1px dashed var(--line)}
+.line-valid{font-size:13px;color:var(--muted)}
+.pdf-btn{
+  margin-left:auto;font-size:12.5px;font-weight:700;color:var(--blue-strong);
+  background:none;border:1.5px solid var(--line);border-radius:7px;padding:5px 12px;cursor:pointer
+}
+.pdf-btn:hover{border-color:var(--blue-strong)}
+.season-tag{
+  font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:3px 10px
+}
+.line-note{margin-top:26px;color:var(--muted);font-size:14.5px}
+
+/* ---------- Zahlen ---------- */
+.facts{background:var(--navy);color:#fff}
+.facts .wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;text-align:center}
+.fact b{
+  display:block;font-family:var(--serif);font-size:clamp(40px,5vw,58px);
+  line-height:1.1;margin-bottom:6px
+}
+.fact span{color:#c9dcEC;font-size:15.5px}
+
+/* ---------- Shuttle ---------- */
+#shuttle .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin:8px 0 34px}
+.step{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:22px;position:relative
+}
+.step .num{
+  width:38px;height:38px;border-radius:50%;background:var(--navy);color:#fff;
+  font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:14px
+}
+[data-theme="dark"] .step .num{background:var(--sky);color:#0c2236}
+.step h3{font-size:16.5px;margin-bottom:6px}
+.step p{color:var(--muted);font-size:14.5px}
+.step::after{
+  content:"";position:absolute;top:38px;right:-20px;width:20px;height:2px;background:var(--line)
+}
+.step:last-child::after{display:none}
+#shuttle .cta-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.cta-note{color:var(--muted);font-size:14.5px}
+
+/* ---------- Karriere ---------- */
+#karriere{background:var(--card);border-top:1px solid var(--line)}
+.karriere-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+.benefits{list-style:none;display:flex;flex-direction:column;gap:14px;margin-top:4px}
+.benefits li{display:flex;gap:12px;align-items:flex-start;font-size:15.5px}
+.benefits .icon{color:#3d8f52;margin-top:3px}
+.karriere-cta{display:flex;gap:14px;flex-wrap:wrap;margin-top:26px}
+
+/* ---------- Footer ---------- */
+footer{background:var(--navy-2);color:#cfe0ef;padding:56px 0 0;font-size:14.5px}
+.foot-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:40px;padding-bottom:40px}
+.foot-grid h3{color:#fff;font-size:15px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px}
+.foot-grid p{margin-bottom:8px}
+.foot-grid a{color:#eaf2f9;text-decoration:none}
+.foot-grid a:hover{text-decoration:underline}
+.foot-grid ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.foot-contact a{display:inline-flex;gap:9px;align-items:center}
+.foot-bottom{
+  border-top:1px solid rgba(255,255,255,.14);padding:18px 0;
+  display:flex;gap:20px;flex-wrap:wrap;align-items:center;font-size:13.5px;color:#9db6ca
+}
+.foot-bottom .legal{margin-left:auto;display:flex;gap:22px}
+.foot-bottom a{color:#cfe0ef;text-decoration:none}
+.foot-bottom a:hover{text-decoration:underline}
+
+/* ---------- Mobile-Aktionsleiste ---------- */
+.mobilebar{
+  display:none;position:fixed;left:0;right:0;bottom:0;z-index:150;
+  background:var(--card);border-top:1px solid var(--line);
+  box-shadow:0 -6px 20px rgba(16,42,66,.10);
+  padding:6px 4px calc(6px + env(safe-area-inset-bottom))
+}
+.mobilebar ul{list-style:none;display:grid;grid-template-columns:repeat(4,1fr)}
+.mobilebar a{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  text-decoration:none;color:var(--ink);font-size:11px;font-weight:600;padding:7px 2px;border-radius:8px
+}
+.mobilebar .icon{width:21px;height:21px;color:var(--blue-strong)}
+body.has-mobilebar{padding-bottom:72px}
+@media (min-width:721px){body.has-mobilebar{padding-bottom:0}}
+
+/* ---------- Cookie-Hinweis (deutsch, nicht blockierend) ---------- */
+.cookie{
+  position:fixed;left:16px;right:16px;bottom:16px;z-index:180;
+  background:var(--card);color:var(--ink);border:1px solid var(--line);
+  border-radius:var(--radius);box-shadow:var(--shadow);
+  padding:20px 22px;max-width:560px;margin:0 auto
+}
+@media (max-width:720px){.cookie{bottom:82px}}
+.cookie[hidden]{display:none}
+.cookie h2{font-size:16px;margin-bottom:6px;color:var(--navy)}
+[data-theme="dark"] .cookie h2{color:var(--sky)}
+.cookie p{font-size:14px;color:var(--muted);margin-bottom:12px}
+.cookie-row{display:flex;gap:10px;flex-wrap:wrap}
+.cookie .btn{padding:10px 18px;font-size:14px}
+.cookie-details{margin:0 0 12px}
+.cookie-details summary{cursor:pointer;font-size:13.5px;color:var(--blue-strong);font-weight:600}
+.cookie-checks{display:flex;gap:18px;flex-wrap:wrap;padding:10px 0 0;font-size:14px}
+.cookie-checks label{display:flex;gap:8px;align-items:center}
+.cookie-checks input[type=checkbox]{width:17px;height:17px;accent-color:var(--navy)}
+.cookie-checks .off{color:var(--muted)}
+
+/* ---------- Toast ---------- */
+.toast{
+  position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(8px);
+  background:var(--navy-2);color:#fff;padding:11px 20px;border-radius:10px;
+  font-size:14.5px;box-shadow:var(--shadow);opacity:0;pointer-events:none;
+  transition:opacity .2s,transform .2s;z-index:300;max-width:90vw;text-align:center
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1080px){
+  .main-nav,.head-cta{display:none}
+  .burger{display:flex}
+  .site-head{position:relative}
+  .mobile-nav{
+    display:none;position:absolute;top:100%;left:0;right:0;background:var(--card);
+    border-bottom:1px solid var(--line);box-shadow:0 18px 30px rgba(16,42,66,.14)
+  }
+  .mobile-nav.open{display:block}
+  .mobile-nav ul{list-style:none;padding:10px 16px 18px}
+  .mobile-nav a{
+    display:block;padding:14px 10px;text-decoration:none;color:var(--ink);
+    font-weight:600;font-size:17px;border-bottom:1px solid var(--line)
+  }
+  .mobile-nav li:last-child a{border-bottom:0}
+  .line-grid{grid-template-columns:repeat(2,1fr)}
+  #shuttle .steps{grid-template-columns:repeat(2,1fr)}
+  .step::after{display:none}
+  .karriere-grid{grid-template-columns:1fr}
+}
+@media (max-width:720px){
+  .quick-grid{grid-template-columns:1fr;margin-top:-72px}
+  .quick-card{flex-direction:row;align-items:center;gap:16px}
+  .quick-card .qtop{margin-bottom:0}
+  .qtitle{font-size:18px}
+  .qarrow{margin-top:0;margin-left:auto}
+  .line-grid{grid-template-columns:1fr}
+  .facts .wrap{grid-template-columns:1fr;gap:30px}
+  #shuttle .steps{grid-template-columns:1fr}
+  .foot-grid{grid-template-columns:1fr;gap:28px}
+  .abf-row{grid-template-columns:52px 1fr auto;grid-template-rows:auto auto;row-gap:4px}
+  .abf-dir{grid-column:2/3}
+  .abf-dir .dir{white-space:normal}
+  .abf-time{grid-column:3/4}
+  .abf-in{grid-column:2/3;text-align:left;min-width:0}
+  .badge{grid-column:3/4;align-self:center}
+  .topbar .hide-sm{display:none}
+  .clock{margin-left:0}
+  .widget-bar{align-items:flex-start;flex-direction:column;gap:10px}
+  select#stop{width:100%}
+  .mobilebar{display:block}
+  body{padding-bottom:70px}
+  section{padding:52px 0}
+}
+</style>
+</head>
+<body class="has-mobilebar">
+<a class="skip" href="#main">Zum Inhalt springen</a>
+
+<!-- Kopfzeile: direkte Kontakte + Dunkel-Umschalter -->
+<div class="topbar">
+  <div class="wrap">
+    <a href="tel:+4352543550">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/></svg>
+      +43 (0) 5254 3550
+    </a>
+    <a class="hide-sm" href="mailto:info@oetztaler.at">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+      info@oetztaler.at
+    </a>
+    <span class="spacer"></span>
+    <button class="theme-toggle" id="themeToggle" role="switch" aria-checked="false">
+      Dunkel
+      <span class="track"><span class="knob"></span></span>
+    </button>
+  </div>
+</div>
+
+<!-- Hauptnavigation -->
+<header class="site-head">
+  <div class="wrap">
+    <a class="logo" href="#" aria-label="Ötztaler Verkehrsgesellschaft – zur Startseite">
+      <span class="word">ÖTZTALER</span>
+      <span class="claim">Einfach besser reisen!</span>
+    </a>
+    <nav class="main-nav" aria-label="Hauptnavigation">
+      <ul>
+        <li><a href="#linien">Linienverkehr</a></li>
+        <li><a href="#abfahrten">Live-Abfahrten</a></li>
+        <li><a href="#shuttle">Shuttle-Service</a></li>
+        <li><a href="#unternehmen">Unternehmen</a></li>
+        <li><a href="#karriere">Karriere</a></li>
+        <li><a href="#kontakt">Kontakt</a></li>
+      </ul>
+    </nav>
+    <span class="head-cta">
+      <a class="btn btn-primary" href="#abfahrten">Nächste Abfahrten</a>
+    </span>
+    <button class="burger" id="burger" aria-expanded="false" aria-controls="mobileNav" aria-label="Menü öffnen">
+      <svg class="icon" viewBox="0 0 24 24" style="width:24px;height:24px" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+  </div>
+  <nav class="mobile-nav" id="mobileNav" aria-label="Mobile Navigation">
+    <ul>
+      <li><a href="#linien">Linienverkehr</a></li>
+      <li><a href="#abfahrten">Live-Abfahrten</a></li>
+      <li><a href="#shuttle">Shuttle-Service</a></li>
+      <li><a href="#unternehmen">Unternehmen</a></li>
+      <li><a href="#karriere">Karriere</a></li>
+      <li><a href="#kontakt">Kontakt</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main">
+
+  <!-- Hero -->
+  <section class="hero" style="padding:0" aria-label="Begrüßung">
+    <svg class="hero-art" viewBox="0 0 1440 560" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Stilisierte Ötztaler Berglandschaft mit Bus auf der Talstraße">
+      <rect class="sk" x="0" y="0" width="1440" height="560"/>
+      <circle class="cloud" cx="1090" cy="120" r="70"/>
+      <circle class="cloud" cx="1170" cy="140" r="55"/>
+      <circle class="cloud" cx="1010" cy="150" r="45"/>
+      <circle class="cloud" cx="300" cy="90" r="55"/>
+      <circle class="cloud" cx="380" cy="110" r="40"/>
+      <!-- Gipfel mit Schneekappen -->
+      <g>
+        <path class="r1" d="M-40 400 L210 170 L320 260 L430 150 L560 400 Z"/>
+        <path d="M210 170 L250 205 L228 202 L262 235 L210 170 Z" fill="#dbe7f2" opacity=".85"/>
+        <path d="M430 150 L468 188 L445 184 L472 212 L430 150 Z" fill="#dbe7f2" opacity=".85"/>
+        <path class="r1" d="M480 400 L760 130 L900 260 L1010 180 L1200 400 Z"/>
+        <path d="M760 130 L802 172 L775 168 L810 200 L760 130 Z" fill="#dbe7f2" opacity=".9"/>
+        <path class="r1" d="M1120 400 L1320 200 L1440 300 L1440 400 Z"/>
+        <path d="M1320 200 L1350 230 L1332 227 L1352 246 L1320 200 Z" fill="#dbe7f2" opacity=".85"/>
+      </g>
+      <!-- Mittlere Berge -->
+      <path class="r2" d="M-40 460 L160 300 L340 430 L520 280 L760 470 L980 310 L1180 450 L1440 340 L1440 560 L-40 560 Z"/>
+      <!-- Vordergrund-Tal -->
+      <path class="r3" d="M-40 560 L-40 500 L240 460 L520 500 L820 452 L1120 496 L1440 470 L1440 560 Z"/>
+      <!-- Talstraße mit Bus -->
+      <path class="road" d="M-60 540 C 240 512, 480 528, 720 500 C 960 474, 1180 496, 1500 470"/>
+      <path class="roadline" d="M-60 540 C 240 512, 480 528, 720 500 C 960 474, 1180 496, 1500 470"/>
+      <g transform="translate(1030 435)">
+        <rect class="busbody" x="0" y="0" width="92" height="30" rx="6"/>
+        <rect class="buswin" x="8" y="6" width="18" height="9" rx="2"/>
+        <rect class="buswin" x="32" y="6" width="18" height="9" rx="2"/>
+        <rect class="buswin" x="56" y="6" width="18" height="9" rx="2"/>
+        <circle class="buswheel" cx="20" cy="32" r="7"/>
+        <circle class="buswheel" cx="72" cy="32" r="7"/>
+      </g>
+    </svg>
+    <div class="hero-content">
+      <div class="wrap">
+        <div class="hero-inner">
+          <p class="eyebrow">Ötztaler Verkehrsgesellschaft</p>
+          <h1>Wir verbinden das Ötztal und Tirol.</h1>
+          <p class="lead">Linienverkehr, Reisebusse und Shuttle-Service – sicher, pünktlich und komfortabel von A nach B. Jetzt mit Abfahrten in Echtzeit-Sicht.</p>
+          <div class="hero-actions">
+            <a class="btn btn-light" href="#abfahrten">Live-Abfahrten ansehen</a>
+            <a class="btn btn-ghost" style="color:#fff;box-shadow:inset 0 0 0 2px #fff" href="#shuttle">Shuttle buchen</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Schnellzugriffe -->
+  <div class="quick">
+    <div class="wrap">
+      <div class="quick-grid">
+        <a class="quick-card" href="#abfahrten">
+          <span class="qtop">
+            <span class="qicon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="14" rx="3"/><path d="M4 10h16M8 21l1.5-4M16 21l-1.5-4"/><circle cx="8.5" cy="14" r="1"/><circle cx="15.5" cy="14" r="1"/></svg></span>
+            <span><span class="qsmall">Linienverkehr im Ötztal und Inntal</span><span class="qtitle" style="display:block">Live-Fahrplan &amp; Tickets</span></span>
+          </span>
+          <span class="qarrow"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
+        </a>
+        <a class="quick-card" href="#kontakt">
+          <span class="qtop">
+            <span class="qicon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="14" rx="3"/><path d="M4 10h16M8 21l1.5-4M16 21l-1.5-4"/><circle cx="8.5" cy="14" r="1"/><circle cx="15.5" cy="14" r="1"/></svg></span>
+            <span><span class="qsmall">Reisen und Ausflüge mit dem Ötztaler</span><span class="qtitle" style="display:block">Einen Bus anfragen</span></span>
+          </span>
+          <span class="qarrow"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
+        </a>
+        <a class="quick-card" href="#shuttle">
+          <span class="qtop">
+            <span class="qicon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 20l-5-3V6l5 3 6-3 5 3v11l-5-3-6 3Z"/><path d="M9 9v11m6-14v11"/></svg></span>
+            <span><span class="qsmall">Flughafen, Bahnhof oder Tourismus-Orte</span><span class="qtitle" style="display:block">Shuttle buchen</span></span>
+          </span>
+          <span class="qarrow"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live-Abfahrten -->
+  <section id="abfahrten" aria-labelledby="abf-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Linienverkehr</p>
+        <h2 id="abf-title">Nächste Abfahrten – direkt an Ihrer Haltestelle</h2>
+        <p>Haltestelle wählen, aktueller Stand erscheint sofort. Keine PDF-Suche, kein Wechsel zu einer anderen Plattform.</p>
+      </div>
+      <div class="widget">
+        <div class="widget-bar">
+          <label for="stop">Haltestelle</label>
+          <select id="stop"></select>
+          <span class="clock"><span class="dot" aria-hidden="true"></span> Stand <span id="clock">–</span> Uhr</span>
+        </div>
+        <p class="abf-hint">Die fünf nächsten Abfahrten an der gewählten Haltestelle:</p>
+        <ul class="abf-list" id="abfList"></ul>
+        <noscript><p class="abf-empty" style="padding:0 24px 18px">Für die Live-Abfahrten wird JavaScript benötigt.</p></noscript>
+        <div class="widget-foot">
+          <span class="demo-chip">DEMO</span>
+          <span>Simulierte Fahrzeiten auf Basis der Sommerfahrpläne 2026 – keine Echtzeit-Anbindung.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Linienübersicht -->
+  <section id="linien" aria-labelledby="lin-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Fahrpläne</p>
+        <h2 id="lin-title">Alle Linien auf einen Blick</h2>
+        <p>Nach Linien sortiert – nicht nach Saison. Gültigkeiten immer sichtbar, Fahrplan-PDF als Zusatzangebot.</p>
+      </div>
+      <div class="line-grid" id="lineGrid"></div>
+      <p class="line-note">Winterlinien (Skibusse, Nachtskilauf und Shuttles) werden rechtzeitig vor Saisonstart hier veröffentlicht.</p>
+    </div>
+  </section>
+
+  <!-- Zahlen -->
+  <section class="facts" id="unternehmen" aria-labelledby="facts-title">
+    <div class="wrap">
+      <h2 id="facts-title" class="visually-hidden" style="position:absolute;left:-999px">Der Ötztaler in Zahlen</h2>
+      <div class="fact"><b>45</b><span>Fahrzeuge im Einsatz – Linie, Reisebus und Shuttle</span></div>
+      <div class="fact"><b>7</b><span>Ganzjahr-Linien durch das Ötztal und Inntal</span></div>
+      <div class="fact"><b>365</b><span>Tage im Jahr unterwegs – bei jedem Wetter</span></div>
+    </div>
+  </section>
+
+  <!-- Shuttle in vier Schritten -->
+  <section id="shuttle" aria-labelledby="sh-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Shuttle-Service</p>
+        <h2 id="sh-title">Vom Flughafen bis zur Hüttentür – in vier klaren Schritten</h2>
+        <p>Flughafen, Bahnhof oder Tourismus-Ort: Sie wissen jederzeit, welcher Schritt als nächstes kommt.</p>
+      </div>
+      <div class="steps">
+        <div class="step"><span class="num">1</span><h3>Abholpunkt wählen</h3><p>Flughafen, Bahnhof oder Hotel – Sie geben an, wo die Fahrt beginnt.</p></div>
+        <div class="step"><span class="num">2</span><h3>Ziel angeben</h3><p>Wir berechnen Route und Festpreis transparent vorab.</p></div>
+        <div class="step"><span class="num">3</span><h3>Fahrgäste &amp; Zeit</h3><p>Personenzahl, Ankunftszeit und Gepäck – alles in einer Maske.</p></div>
+        <div class="step"><span class="num">4</span><h3>Prüfen &amp; Bezahlen</h3><p>Alles auf einen Blick prüfen, bestätigen, fertig.</p></div>
+      </div>
+      <div class="cta-row">
+        <button class="btn btn-primary demo-link" type="button">Jetzt Shuttle buchen</button>
+        <span class="cta-note">Buchung in der Demo nicht aktiv – in der echten Anwendung mit Preisrechner.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Karriere -->
+  <section id="karriere" aria-labelledby="ka-title">
+    <div class="wrap">
+      <div class="karriere-grid">
+        <div>
+          <p class="eyebrow">Karriere</p>
+          <h2 id="ka-title" style="font-family:var(--serif);font-size:clamp(26px,3vw,36px);color:var(--navy);line-height:1.2;margin-bottom:14px">Fahrerin oder Fahrer im Ötztal werden</h2>
+          <p style="color:var(--muted);font-size:17px">Wir suchen Menschen, die gern am Steuer sitzen und gastfreundlich denken. Berufs­einstieg oder erfahrene Kraftfahrer:in – bei uns fahren Sie in einem der schönsten Täler Tirols.</p>
+          <div class="karriere-cta">
+            <button class="btn btn-primary demo-link" type="button">Offene Stellen ansehen</button>
+            <button class="btn btn-ghost demo-link" type="button">Unsicher? Rufen Sie uns an</button>
+          </div>
+        </div>
+        <ul class="benefits">
+          <li><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 13 4 4L19 7"/></svg>Sichere, unbefristete Arbeitsplätze in der Region</li>
+          <li><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 13 4 4L19 7"/></svg>Entlohnung nach Kollektivvertrag plus Zulagen</li>
+          <li><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 13 4 4L19 7"/></svg>Moderner Fuhrpark mit eigener Werkstatt</li>
+          <li><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 13 4 4L19 7"/></svg>Plannbare Dienste – auch in Teilzeit möglich</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Fußbereich -->
+<footer id="kontakt">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-contact">
+        <h3>Kontakt</h3>
+        <p>Ötztaler Verkehrsgesellschaft m.b.H.<br>Ötztalstraße 2<br>6450 Sölden, Tirol</p>
+        <p style="margin-top:12px">
+          <a href="tel:+4352543550"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/></svg> +43 (0) 5254 3550</a><br>
+          <a href="mailto:info@oetztaler.at"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg> info@oetztaler.at</a>
+        </p>
+      </div>
+      <div>
+        <h3>Angebot</h3>
+        <ul>
+          <li><a href="#linien">Linien &amp; Fahrpläne</a></li>
+          <li><a href="#abfahrten">Live-Abfahrten</a></li>
+          <li><a href="#shuttle">Shuttle-Service</a></li>
+          <li><a href="#unternehmen">Unternehmen</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Wissenswertes</h3>
+        <ul>
+          <li><a href="#" class="demo-link">Beförderungsbestimmungen</a></li>
+          <li><a href="#" class="demo-link">AGBs</a></li>
+          <li><a href="#" class="demo-link">Datenschutz</a></li>
+          <li><a href="#karriere">Karriere</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Ötztaler Verkehrsgesellschaft m.b.H. – Konzept-Neugestaltung (Demo)</span>
+      <span class="legal">
+        <a href="#" class="demo-link">Impressum</a>
+        <a href="#" class="demo-link">Barrierefreiheit</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<!-- Mobile Aktionsleiste -->
+<nav class="mobilebar" aria-label="Schnellaktionen">
+  <ul>
+    <li><a href="tel:+4352543550"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/></svg>Hotline</a></li>
+    <li><a href="#abfahrten"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 3"/></svg>Abfahrten</a></li>
+    <li><a href="#shuttle"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 20l-5-3V6l5 3 6-3 5 3v11l-5-3-6 3Z"/><path d="M9 9v11m6-14v11"/></svg>Shuttle</a></li>
+    <li><a href="#karriere"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Karriere</a></li>
+  </ul>
+</nav>
+
+<!-- Cookie-Hinweis: deutsch, nicht blockierend, Auswahl zuerst -->
+<div class="cookie" id="cookie" role="dialog" aria-label="Cookie-Einstellungen" hidden>
+  <h2>Cookies</h2>
+  <p>Wir verwenden Cookies, um unsere Website optimal zu gestalten. Notwendige Cookies sind für den Betrieb erforderlich und immer aktiv.</p>
+  <details class="cookie-details">
+    <summary>Einstellungen anzeigen</summary>
+    <div class="cookie-checks">
+      <label><input type="checkbox" checked disabled> Notwendig <span class="off">(immer aktiv)</span></label>
+      <label><input type="checkbox" id="ckStat"> Statistik</label>
+      <label><input type="checkbox" id="ckMkt"> Marketing</label>
+    </div>
+  </details>
+  <div class="cookie-row">
+    <button class="btn btn-primary" id="ckSave" type="button">Auswahl speichern</button>
+    <button class="btn btn-ghost" id="ckAll" type="button">Alle akzeptieren</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+/* ============================================================
+   Daten – Demo-Fahrpläne (plausible Zeiten, Sommer 2026)
+   Alle Angaben simuliert; Struktur aber an echten Linien orientiert.
+   ============================================================ */
+const LINES = [
+  { nr:"320", name:"Ötztalverkehr", from:"Ötztal-Bahnhof", to:"Obergurgl",
+    first:"05:40", last:"20:40", headway:60, season:"Ganzjahr",
+    valid:"13.06.2026 – 20.09.2026",
+    route:[["Ötztal-Bahnhof",0],["Sautens",7],["Oetz",12],["Tumpen",18],["Umhausen",24],
+           ["Längenfeld",34],["Köfels",42],["Sölden",50],["Obergurgl",65]], reverse:true },
+  { nr:"320X", name:"Schnellbus Ötztal", from:"Ötztal-Bahnhof", to:"Sölden",
+    first:"06:30", last:"18:30", headway:120, season:"Ganzjahr",
+    valid:"ab 13.06.2026",
+    route:[["Ötztal-Bahnhof",0],["Oetz",10],["Längenfeld",28],["Sölden",44]], reverse:true },
+  { nr:"52–57", name:"Dorfbus Sölden", from:"Sölden Mitte", to:"Hochsölden",
+    first:"08:00", last:"18:30", headway:30, season:"Ganzjahr",
+    valid:"13.06.2026 – 20.09.2026",
+    route:[["Sölden",0],["Sölden Mitte",4],["Ötztaler Straße",8],["Hochsölden",14]], reverse:false },
+  { nr:"330", name:"Vent", from:"Sölden", to:"Vent",
+    first:"07:10", last:"18:10", headway:60, season:"Ganzjahr",
+    valid:"13.06.2026 – 20.09.2026",
+    route:[["Sölden",0],["Zwieselstein",10],["Vent",25]], reverse:true },
+  { nr:"8352", name:"Inntalverkehr", from:"Imst", to:"Ötztal-Bahnhof",
+    first:"05:20", last:"20:20", headway:60, season:"Ganzjahr",
+    valid:"ab 13.06.2026",
+    route:[["Imst",0],["Roppen",12],["Ötztal-Bahnhof",20]], reverse:true },
+  { nr:"960X", name:"Innsbruck–Lienz", from:"Ötztal-Bahnhof", to:"Innsbruck",
+    first:"06:05", last:"18:05", headway:180, season:"Ganzjahr",
+    valid:"ab 13.06.2026",
+    route:[["Ötztal-Bahnhof",0],["Telfs",35],["Innsbruck",75]], reverse:true },
+  { nr:"460T", name:"Grinzens–Oberperfuss", from:"Grinzens", to:"Oberperfuss",
+    first:"06:15", last:"19:15", headway:120, season:"Ganzjahr",
+    valid:"ab 13.06.2026",
+    route:[["Grinzens",0],["Axams",14],["Oberperfuss",28]], reverse:true },
+  { nr:"54B", name:"Wanderbus Windach", from:"Sölden", to:"Windachtal",
+    first:"08:30", last:"17:30", headway:90, season:"Sommer",
+    valid:"21.06.2026 – 20.09.2026",
+    route:[["Sölden",0],["Windachtal",20]], reverse:true },
+  { nr:"70", name:"Gletscher Sölden", from:"Sölden", to:"Rettenbachferner",
+    first:"08:15", last:"16:45", headway:75, season:"Sommer",
+    valid:"21.06.2026 – 20.09.2026",
+    route:[["Sölden",0],["Zwieselstein",12],["Rettenbachferner",35]], reverse:false },
+  { nr:"335", name:"Timmelsjoch–Moos (IT)", from:"Sölden", to:"Moos in Passeier",
+    first:"09:00", last:"16:00", headway:180, season:"Sommer",
+    valid:"01.07.2026 – 08.09.2026",
+    route:[["Sölden",0],["Obergurgl",18],["Timmelsjoch",35],["Moos in Passeier",70]], reverse:false }
+];
+
+/* ---------------- Hilfsfunktionen ---------------- */
+const $ = (sel) => document.querySelector(sel);
+const pad = (n) => String(n).padStart(2,"0");
+const toMin = (hhmm) => { const [h,m] = hhmm.split(":").map(Number); return h*60+m; };
+const toHHMM = (min) => pad(Math.floor(min/60)%24) + ":" + pad(min%60);
+
+/* Bestimmte, ruhige Verspätung (0–3 Min) statt zufälligem Flackern */
+function delayFor(nr, dirIdx, depMin){
+  let h = 0;
+  const s = nr + "|" + dirIdx + "|" + depMin;
+  for (let i=0;i<s.length;i++){ h = (h*31 + s.charCodeAt(i)) >>> 0; }
+  const v = h % 8;                      // 0..7
+  return v < 5 ? 0 : v - 4;             // 0 oder +1..+3 Min
+}
+
+/* Alle Abfahrten an einer Haltestelle berechnen */
+function departuresAt(stopName, nowMin){
+  const result = [];
+  for (const line of LINES){
+    const dirDefs = [{ route: line.route, label: "Richtung " + line.to, dirIdx: 0 }];
+    if (line.reverse){
+      // Rückrichtung: Offsets von der Tal-Seite aus neu berechnen (spiegeln)
+      const span = line.route[line.route.length - 1][1];
+      const back = line.route.slice().reverse().map(([name, off]) => [name, span - off]);
+      dirDefs.push({ route: back, label: "Richtung " + line.from, dirIdx: 1 });
+    }
+    const first = toMin(line.first), last = toMin(line.last);
+    for (const d of dirDefs){
+      const hit = d.route.find(([name]) => name === stopName);
+      if (!hit) continue;
+      for (let t = first; t <= last; t += line.headway){
+        const sched = t + hit[1];
+        const delta = delayFor(line.nr, d.dirIdx, t);
+        const actual = sched + delta;
+        if (actual >= nowMin){
+          result.push({ nr: line.nr, name: line.name, dir: d.label,
+                        sched, delta, actual, inMin: actual - nowMin });
+        }
+      }
+    }
+  }
+  result.sort((a,b) => a.actual - b.actual);
+  return result.slice(0,5);
+}
+
+/* ---------------- Live-Widget ---------------- */
+const stopSelect = $("#stop");
+const abfList = $("#abfList");
+const clockEl = $("#clock");
+
+const STOPS = [...new Set(LINES.flatMap(l => l.route.map(r => r[0])))].sort((a,b)=>a.localeCompare(b,"de"));
+for (const s of STOPS){
+  const opt = document.createElement("option");
+  opt.value = s; opt.textContent = s;
+  if (s === "Sölden") opt.selected = true;   // sinnvoller Einstieg fürs Tal
+  stopSelect.appendChild(opt);
+}
+
+function renderClock(){
+  const n = new Date();
+  clockEl.textContent = pad(n.getHours()) + ":" + pad(n.getMinutes()) + ":" + pad(n.getSeconds());
+}
+
+function renderDepartures(){
+  const stop = stopSelect.value;
+  const n = new Date();
+  const nowMin = n.getHours()*60 + n.getMinutes();
+  let rows = departuresAt(stop, nowMin);
+  let tomorrow = false;
+  if (rows.length === 0){
+    // Betriebstag vorbei: Vorschau der ersten Abfahrten des Folgetags
+    rows = departuresAt(stop, -1);
+    tomorrow = true;
+  }
+  abfList.textContent = "";
+  if (rows.length === 0){
+    const li = document.createElement("li");
+    li.className = "abf-empty";
+    li.textContent = "Für diese Haltestelle liegen keine Fahrplandaten vor.";
+    abfList.appendChild(li);
+    return;
+  }
+  for (const r of rows){
+    const li = document.createElement("li");
+    li.className = "abf-row";
+
+    const chip = document.createElement("span");
+    chip.className = "lchip"; chip.textContent = r.nr;
+
+    const dir = document.createElement("span");
+    dir.className = "abf-dir";
+    const d1 = document.createElement("span"); d1.className = "dir"; d1.textContent = r.dir;
+    const d2 = document.createElement("span"); d2.className = "ln"; d2.textContent = "Linie " + r.nr + " · " + r.name;
+    dir.append(d1, d2);
+
+    const time = document.createElement("span");
+    time.className = "abf-time";
+    time.textContent = toHHMM(r.sched);
+
+    const inMin = document.createElement("span");
+    inMin.className = "abf-in";
+    inMin.textContent = tomorrow ? "morgen"
+      : (r.inMin === 0 ? "jetzt" : "in " + r.inMin + " Min.");
+
+    const badge = document.createElement("span");
+    badge.className = tomorrow ? "badge badge-neutral"
+      : "badge " + (r.delta === 0 ? "badge-ok" : "badge-warn");
+    badge.textContent = tomorrow ? "Folgetag" : (r.delta === 0 ? "pünktlich" : "+" + r.delta + " Min.");
+
+    li.append(chip, dir, time, inMin, badge);
+    abfList.appendChild(li);
+  }
+}
+
+renderClock();
+renderDepartures();
+setInterval(renderClock, 1000);
+setInterval(renderDepartures, 15000);
+stopSelect.addEventListener("change", renderDepartures);
+
+/* ---------------- Linienübersicht ---------------- */
+const lineGrid = $("#lineGrid");
+for (const l of LINES){
+  const card = document.createElement("article");
+  card.className = "line-card";
+
+  const top = document.createElement("div"); top.className = "line-top";
+  const chip = document.createElement("span"); chip.className = "lchip"; chip.textContent = l.nr;
+  const name = document.createElement("span"); name.className = "line-name"; name.textContent = l.name;
+  const tag = document.createElement("span"); tag.className = "season-tag"; tag.textContent = l.season;
+  top.append(chip, name, tag);
+
+  const route = document.createElement("div"); route.className = "line-route";
+  const pin = document.createElementNS("http://www.w3.org/2000/svg","svg");
+  pin.setAttribute("viewBox","0 0 24 24"); pin.setAttribute("class","icon");
+  pin.setAttribute("aria-hidden","true");
+  pin.innerHTML = '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/>';
+  const rt = document.createElement("span");
+  rt.textContent = l.from + " ↔ " + l.to;
+  route.append(pin, rt);
+
+  const meta = document.createElement("div"); meta.className = "line-meta";
+  const valid = document.createElement("span"); valid.className = "line-valid";
+  valid.textContent = "Gültig: " + l.valid;
+  const pdf = document.createElement("button");
+  pdf.type = "button"; pdf.className = "pdf-btn"; pdf.textContent = "PDF";
+  pdf.setAttribute("aria-label","Fahrplan-PDF von Linie " + l.nr + " (in der Demo nicht hinterlegt)");
+  pdf.addEventListener("click", () => toast("Demo: Der PDF-Download ist hier nicht hinterlegt."));
+  meta.append(valid, pdf);
+
+  card.append(top, route, meta);
+  lineGrid.appendChild(card);
+}
+
+/* ---------------- Dunkel-Umschalter ---------------- */
+const themeToggle = $("#themeToggle");
+function applyTheme(dark){
+  document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+  themeToggle.setAttribute("aria-checked", dark ? "true" : "false");
+}
+let stored = null;
+try { stored = localStorage.getItem("ovg-theme"); } catch(e){}
+const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+applyTheme(stored ? stored === "dark" : prefersDark);
+themeToggle.addEventListener("click", () => {
+  const dark = themeToggle.getAttribute("aria-checked") !== "true";
+  applyTheme(dark);
+  try { localStorage.setItem("ovg-theme", dark ? "dark" : "light"); } catch(e){}
+});
+
+/* ---------------- Mobiles Menü ---------------- */
+const burger = $("#burger");
+const mobileNav = $("#mobileNav");
+function closeMenu(){
+  mobileNav.classList.remove("open");
+  burger.setAttribute("aria-expanded","false");
+  burger.setAttribute("aria-label","Menü öffnen");
+}
+burger.addEventListener("click", () => {
+  const open = mobileNav.classList.toggle("open");
+  burger.setAttribute("aria-expanded", open ? "true" : "false");
+  burger.setAttribute("aria-label", open ? "Menü schließen" : "Menü öffnen");
+});
+mobileNav.addEventListener("click", (e) => { if (e.target.closest("a")) closeMenu(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeMenu(); });
+
+/* ---------------- Cookie-Hinweis (deutsch) ---------------- */
+const cookieBox = $("#cookie");
+const CK_KEY = "ovg-cookie-v1";
+try {
+  if (!localStorage.getItem(CK_KEY)) cookieBox.hidden = false;
+} catch(e){ /* ohne localStorage einfach ausblenden lassen */ }
+
+function saveCookie(all){
+  const state = { statistik: all || $("#ckStat").checked, marketing: all || $("#ckMkt").checked };
+  try { localStorage.setItem(CK_KEY, JSON.stringify(state)); } catch(e){}
+  cookieBox.hidden = true;
+  toast(all ? "Alle Cookies akzeptiert." : "Ihre Auswahl wurde gespeichert.");
+}
+$("#ckSave").addEventListener("click", () => saveCookie(false));
+$("#ckAll").addEventListener("click", () => saveCookie(true));
+
+/* ---------------- Demo-Verweise + Toast ---------------- */
+let toastTimer = null;
+function toast(msg){
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
+}
+document.querySelectorAll(".demo-link").forEach(el => {
+  el.addEventListener("click", (e) => {
+    if (el.tagName === "A") e.preventDefault();
+    toast("Diese Demo zeigt nur die Startseite – dieser Bereich ist nicht hinterlegt.");
+  });
+});
+</script>
+</body>
+</html>
